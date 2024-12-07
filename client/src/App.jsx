@@ -1,4 +1,5 @@
 import './App.css'
+import dotenv from "dotenv";
 import { Route, Routes } from 'react-router-dom';
 import IndexPage from './pages/IndexPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
@@ -11,7 +12,10 @@ import PlacesFormPage from './pages/PlacesFormPage.jsx';
 import PlacePage from './pages/PlacePage.jsx';
 import BookingPage from './pages/BookingPage.jsx';
 import { SearchProvider } from './SearchContext.jsx';
-axios.defaults.baseURL = "http://localhost:3000";
+
+dotenv.config();
+
+axios.defaults.baseURL = process.env.BASE_URL || "http://localhost:3000";
 axios.defaults.withCredentials = true;
 
 function App() {

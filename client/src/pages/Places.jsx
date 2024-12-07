@@ -29,7 +29,7 @@ export default function Places() {
                     <Link to={"/account/places/" + place.id} key={index} className="flex bg-gray-200 p-4 rounded-2xl mx-3 gap-4 cursor-pointer mt-2">
                         <div className="flex w-32 h-32 shrink-0">
                             {place.photos.length > 0 && (
-                                <img src={'http://localhost:3000/uploads/' + place.photos[0]} alt={place.title} className="object-cover rounded-xl grow"/>
+                                <img src={ `${process.env.BASE_URL || "http://localhost:3000"}` +'/uploads/' + place.photos[0]} alt={place.title} className="object-cover rounded-xl grow"/>
                             )}
                         </div>
                         <div>

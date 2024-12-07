@@ -30,7 +30,7 @@ export default function IndexPage() {
         <Link to={"/place/" + place.id} key={index} className="max-h-max">
           {place.photos?.[0] && (
             <div className="flex h-64 shrink-0 relative">
-              <img className="object-cover grow rounded-2xl" src={'http://localhost:3000/uploads/' + place.photos?.[0]} alt="" />
+              <img className="object-cover grow rounded-2xl" src={ `${process.env.BASE_URL || "http://localhost:3000"}` +'/uploads/' + place.photos?.[0]} alt="" />
               <div className="absolute right-0 p-5 h-max w-max" >
                 <Favorite placeId={place.id} />
               </div>

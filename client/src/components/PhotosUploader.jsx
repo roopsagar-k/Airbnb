@@ -54,7 +54,7 @@ export default function PhotosUploader({photoLink, setPhotoLink, addedPhotos, se
         <div className="grid gap-2 grid-cols-3 md:grid-cols-4 lg:grid-cols-6 mb-4">
             {addedPhotos.length > 0 && addedPhotos.map((link, index) => (
                 <div key={index} className="h-32 flex cursor-pointer relative">
-                    <img className="rounded-2xl object-cover h-full w-full" src={"http://localhost:3000/uploads/" + link} alt={link}/>
+                    <img className="rounded-2xl object-cover h-full w-full" src={`${process.env.BASE_URL || "http://localhost:3000"}` + "/uploads/" + link} alt={link}/>
                     <div className="absolute bottom-0 right-0 max-w-max p-1">
                         {addedPhotos[0] === link && (
                             <button className="bg-transparent m-1 w-max p-1 backdrop-blur-lg rounded-md transition-all ease-in-out duration-150 hover:scale-90">

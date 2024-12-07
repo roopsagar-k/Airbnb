@@ -18,7 +18,7 @@ export default function Bookings() {
           {place.photos.length > 0 && (
             <div className="flex flex-col sm:flex-row gap-4 bg-gray-200 rounded-2xl overflow-hidden mt-4 shadow-md">
               <div className="h-48 sm:w-48 sm:h-auto flex shrink-0">
-                <img className="object-cover" src={`http://localhost:3000/uploads/${place.photos[0]}`} alt={place.photos[0]} />
+                <img className="object-cover" src={ `${process.env.BASE_URL || "http://localhost:3000"}` +`/uploads/${place.photos[0]}`} alt={place.photos[0]} />
               </div>
               <div className="py-3 grow px-3">
                 <div className="font-semibold text-sm sm:text-base md:text-lg lg:text-xl">{place.title}</div>
