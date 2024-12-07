@@ -1,20 +1,30 @@
 import pg from "pg";
-import dotenv from "dotenv";
-dotenv.config();
+import url from "url";
+import "@dotenv/config";
 
-const { Pool } = pg;
+const config = {
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: process.env.DB_NAME,
+    ssl: {
+        rejectUnauthorized: true,
+        ca: fs.readFileSync('./ca.pem').toString(),
+    },
+};
 
-const db = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "Airbnb",
-  password: "roop9854",
-  port: 5432,
-});
+const db = new pg.Pool(config);
 
-db.connect((err) => {
-  if (err) throw err;
-  console.log("Connected to the Database...");
-});
+(async () => {
+    try {
+        await db.connect();
+        console.log("🎉🚀 Database connected successfully!");
+    } catch (error) {
+        console.error("❌🔥 Error connecting to the database:", error.message);
+        throw error
+    }
+})();
 
 export default db;
+
