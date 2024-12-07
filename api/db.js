@@ -1,6 +1,9 @@
 import pg from "pg";
 import url from "url";
-import "@dotenv/config";
+import fs from 'fs';
+import dotenv from "dotenv";
+
+dotenv.config()
 
 const config = {
     user: process.env.DB_USER,

@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
 import { useMediaQuery } from 'react-responsive';
+import dotenv from "dotenv";
+dotenv.config();
 
 export default function Places() {
     const [places, setPlaces] = useState([]);

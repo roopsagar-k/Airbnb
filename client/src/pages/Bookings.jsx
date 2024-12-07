@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BookingDates from "../components/BookingDates";
+import dotenv from "dotenv";
+dotenv.config()
 
 export default function Bookings() {
   const [bookings, setBookings] = useState([]);

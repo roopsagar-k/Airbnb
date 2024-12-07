@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
+import dotenv from "dotenv";
+dotenv.config();
 
 const Favorites = () => {
     const [places, setPlaces] = useState([]);

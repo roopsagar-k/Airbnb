@@ -3,6 +3,9 @@ import { FiUpload } from "react-icons/fi";
 import { MdDeleteSweep } from "react-icons/md";
 import { FaStar } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export default function PhotosUploader({photoLink, setPhotoLink, addedPhotos, setAddedPhotos}) {
 

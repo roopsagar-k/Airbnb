@@ -4,6 +4,9 @@ import { Link } from "react-router-dom";
 
 import { useSearch } from "../SearchContext";
 import Favorite from "../components/Favorite";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export default function IndexPage() {
   const [places, setPlaces] = useState([]);

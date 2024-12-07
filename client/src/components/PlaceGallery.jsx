@@ -2,6 +2,8 @@ import { useMediaQuery } from "react-responsive";
 import { LuGalleryVertical } from "react-icons/lu";
 import { GrClose } from "react-icons/gr";
 import { useState } from "react";
+import dotenv from "dotenv";
+dotenv.config();
 
 export default function PlaceGallery({ placeData }) {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
