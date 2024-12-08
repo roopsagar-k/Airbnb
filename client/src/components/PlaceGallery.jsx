@@ -2,8 +2,6 @@ import { useMediaQuery } from "react-responsive";
 import { LuGalleryVertical } from "react-icons/lu";
 import { GrClose } from "react-icons/gr";
 import { useState } from "react";
-import dotenv from "dotenv";
-dotenv.config();
 
 export default function PlaceGallery({ placeData }) {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
@@ -34,7 +32,8 @@ export default function PlaceGallery({ placeData }) {
                   className="object-cover grow"
                   src={
                     `${
-                      process.env.BASE_URL || "http://localhost:3000"
+                      import.meta.env.VITE_API_BASE_URL ||
+                      "http://localhost:3000"
                     }/uploads/` + photo
                   }
                   alt={photo}
@@ -54,8 +53,9 @@ export default function PlaceGallery({ placeData }) {
             <img
               className="object-cover grow rounded-2xl md:rounded-tr-none md:rounded-br-none cursor-pointer"
               src={
-                `${process.env.BASE_URL || "http://localhost:3000"}` +
-                `/uploads/${placeData.photos[0]}`
+                `${
+                  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"
+                }` + `/uploads/${placeData.photos[0]}`
               }
               alt=""
             />
@@ -69,8 +69,10 @@ export default function PlaceGallery({ placeData }) {
                   <img
                     className="object-cover grow cursor-pointer"
                     src={
-                      `${process.env.BASE_URL || "http://localhost:3000"}` +
-                      `/uploads/${placeData.photos[1]}`
+                      `${
+                        import.meta.env.VITE_API_BASE_URL ||
+                        "http://localhost:3000"
+                      }` + `/uploads/${placeData.photos[1]}`
                     }
                     alt=""
                   />
@@ -81,8 +83,10 @@ export default function PlaceGallery({ placeData }) {
                   <img
                     className="object-cover grow cursor-pointer"
                     src={
-                      `${process.env.BASE_URL || "http://localhost:3000"}` +
-                      `/uploads/${placeData.photos[2]}`
+                      `${
+                        import.meta.env.VITE_API_BASE_URL ||
+                        "http://localhost:3000"
+                      }` + `/uploads/${placeData.photos[2]}`
                     }
                     alt=""
                   />
@@ -97,8 +101,10 @@ export default function PlaceGallery({ placeData }) {
                       <img
                         className="object-cover grow rounded-tr-2xl cursor-pointer"
                         src={
-                          `${process.env.BASE_URL || "http://localhost:3000"}` +
-                          `/uploads/${placeData.photos[3]}`
+                          `${
+                            import.meta.env.VITE_API_BASE_URL ||
+                            "http://localhost:3000"
+                          }` + `/uploads/${placeData.photos[3]}`
                         }
                         alt=""
                       />
@@ -109,8 +115,10 @@ export default function PlaceGallery({ placeData }) {
                       <img
                         className="object-cover grow rounded-br-2xl cursor-pointer"
                         src={
-                          `${process.env.BASE_URL || "http://localhost:3000"}` +
-                          `/uploads/${placeData.photos[4]}`
+                          `${
+                            import.meta.env.VITE_API_BASE_URL ||
+                            "http://localhost:3000"
+                          }` + `/uploads/${placeData.photos[4]}`
                         }
                         alt=""
                       />

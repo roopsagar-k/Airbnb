@@ -37,6 +37,7 @@ app.post("/register", async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
+  console.log(name, email, password, "user details for registration")
   const hashedPassword = await bcrypt.hash(
     password,
     process.env.SALT_ROUND | 0
@@ -50,6 +51,7 @@ app.post("/register", async (req, res) => {
       "INSERT INTO users(name, email, password) VALUES ($1, $2, $3)",
       [name, email, hashedPassword]
     );
+    console.log("User registered successfully")
     res.status(201).json({ message: "User registered successfully" });
   }
 });
@@ -83,6 +85,7 @@ app.get("/profile", authenticateToken, (req, res) => {
   if (req.user) {
     res.json(req.user);
   }
+  res.status(404).json("user not found")
 });
 
 app.post("/logout", (req, res) => {
@@ -102,7 +105,6 @@ app.post("/uploadFromLink", async (req, res) => {
     console.log(err);
   }
 
-  console.log("damn you");
   res.json(newName);
 });
 

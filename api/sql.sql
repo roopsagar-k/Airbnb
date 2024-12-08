@@ -1,53 +1,14 @@
---
--- PostgreSQL database dump
---
+-- Drop existing tables and sequences if they exist
+DROP TABLE IF EXISTS public.bookings CASCADE;
+DROP TABLE IF EXISTS public.places CASCADE;
+DROP TABLE IF EXISTS public.users CASCADE;
 
--- Dumped from database version 15.4
--- Dumped by pg_dump version 15.4
+DROP SEQUENCE IF EXISTS public.bookings_id_seq CASCADE;
+DROP SEQUENCE IF EXISTS public.places_id_seq CASCADE;
+DROP SEQUENCE IF EXISTS public.users_id_seq CASCADE;
 
--- Started on 2024-04-06 15:08:41
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
-
---
--- TOC entry 219 (class 1259 OID 16640)
--- Name: bookings; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.bookings (
-    id integer NOT NULL,
-    place integer,
-    check_in date,
-    check_out date,
-    number_of_guests integer,
-    name text,
-    contact_number bigint,
-    price numeric(15,2),
-    user_id integer NOT NULL
-);
-
-
-ALTER TABLE public.bookings OWNER TO postgres;
-
---
--- TOC entry 218 (class 1259 OID 16639)
--- Name: bookings_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.bookings_id_seq
+-- Create the users table and its sequence
+CREATE SEQUENCE public.users_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -55,24 +16,25 @@ CREATE SEQUENCE public.bookings_id_seq
     NO MAXVALUE
     CACHE 1;
 
+CREATE TABLE public.users (
+    id integer NOT NULL DEFAULT nextval('public.users_id_seq'::regclass),
+    name text NOT NULL,
+    email text NOT NULL UNIQUE,
+    password text NOT NULL,
+    PRIMARY KEY (id)
+);
 
-ALTER TABLE public.bookings_id_seq OWNER TO postgres;
-
---
--- TOC entry 3344 (class 0 OID 0)
--- Dependencies: 218
--- Name: bookings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.bookings_id_seq OWNED BY public.bookings.id;
-
-
---
--- TOC entry 216 (class 1259 OID 16605)
--- Name: places; Type: TABLE; Schema: public; Owner: postgres
---
+-- Create the places table and its sequence
+CREATE SEQUENCE public.places_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 CREATE TABLE public.places (
+    id integer NOT NULL DEFAULT nextval('public.places_id_seq'::regclass),
     title text,
     address text,
     photos text[],
@@ -83,19 +45,13 @@ CREATE TABLE public.places (
     checkout text,
     maxguests integer,
     owner integer,
-    id integer NOT NULL,
-    price numeric(10,2)
+    price numeric(10,2),
+    PRIMARY KEY (id),
+    CONSTRAINT places_owner_fkey FOREIGN KEY (owner) REFERENCES public.users (id)
 );
 
-
-ALTER TABLE public.places OWNER TO postgres;
-
---
--- TOC entry 217 (class 1259 OID 16625)
--- Name: places_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.places_id_seq
+-- Create the bookings table and its sequence
+CREATE SEQUENCE public.bookings_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -103,148 +59,33 @@ CREATE SEQUENCE public.places_id_seq
     NO MAXVALUE
     CACHE 1;
 
-
-ALTER TABLE public.places_id_seq OWNER TO postgres;
-
---
--- TOC entry 3345 (class 0 OID 0)
--- Dependencies: 217
--- Name: places_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.places_id_seq OWNED BY public.places.id;
-
-
---
--- TOC entry 215 (class 1259 OID 16595)
--- Name: users; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.users (
-    id integer NOT NULL,
-    name text NOT NULL,
-    email text NOT NULL,
-    password text NOT NULL
+CREATE TABLE public.bookings (
+    id integer NOT NULL DEFAULT nextval('public.bookings_id_seq'::regclass),
+    place integer,
+    check_in date,
+    check_out date,
+    number_of_guests integer,
+    name text,
+    contact_number bigint,
+    price numeric(15,2),
+    user_id integer NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT bookings_place_fkey FOREIGN KEY (place) REFERENCES public.places (id),
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users (id)
 );
 
-
-ALTER TABLE public.users OWNER TO postgres;
-
---
--- TOC entry 214 (class 1259 OID 16594)
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.users_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.users_id_seq OWNER TO postgres;
-
---
--- TOC entry 3346 (class 0 OID 0)
--- Dependencies: 214
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
+-- Set sequence ownership
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+ALTER SEQUENCE public.places_id_seq OWNED BY public.places.id;
+ALTER SEQUENCE public.bookings_id_seq OWNED BY public.bookings.id;
 
 
---
--- TOC entry 3185 (class 2604 OID 16643)
--- Name: bookings id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.bookings ALTER COLUMN id SET DEFAULT nextval('public.bookings_id_seq'::regclass);
-
-
---
--- TOC entry 3184 (class 2604 OID 16626)
--- Name: places id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.places ALTER COLUMN id SET DEFAULT nextval('public.places_id_seq'::regclass);
-
-
---
--- TOC entry 3183 (class 2604 OID 16598)
--- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
-
-
---
--- TOC entry 3193 (class 2606 OID 16647)
--- Name: bookings bookings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.bookings
-    ADD CONSTRAINT bookings_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 3191 (class 2606 OID 16628)
--- Name: places places_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.places
-    ADD CONSTRAINT places_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 3187 (class 2606 OID 16604)
--- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_email_key UNIQUE (email);
-
-
---
--- TOC entry 3189 (class 2606 OID 16602)
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 3195 (class 2606 OID 16648)
--- Name: bookings bookings_place_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.bookings
-    ADD CONSTRAINT bookings_place_fkey FOREIGN KEY (place) REFERENCES public.places(id);
-
-
---
--- TOC entry 3196 (class 2606 OID 16662)
--- Name: bookings fk_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.bookings
-    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
--- TOC entry 3194 (class 2606 OID 16610)
--- Name: places places_owner_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.places
-    ADD CONSTRAINT places_owner_fkey FOREIGN KEY (owner) REFERENCES public.users(id);
-
-
--- Completed on 2024-04-06 15:08:41
-
---
--- PostgreSQL database dump complete
---
-
+CREATE TABLE favorites (
+    id SERIAL PRIMARY KEY,        -- Unique identifier for each favorite entry
+    user_id INTEGER NOT NULL,     -- References the `id` column in the `users` table
+    place_id INTEGER NOT NULL,    -- References the `id` column in the `places` table
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp for when the favorite was added
+    UNIQUE(user_id, place_id),    -- Ensures a user cannot favorite the same place more than once
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_place FOREIGN KEY (place_id) REFERENCES places (id) ON DELETE CASCADE
+);
