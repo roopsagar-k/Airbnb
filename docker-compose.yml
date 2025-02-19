@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  backend:
+    image: roopsagar9854/airbnb-backend:v2
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: always
+
+  frontend:
+    image: roopsagar9854/airbnb-client:latest
+    ports:
+      - "4173:4173"
+    environment:
+      - VITE_API_BASE_URL=http://backend:3000
