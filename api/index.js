@@ -25,8 +25,7 @@ app.use(
       "http://frontend:4173",
       "http://3.110.56.47:4173",
       "http://airbnb-clone.roopsagar.tech",
-      process.env.CLIENT_URL, // No `.toString()` needed
-    ].filter(Boolean), // Removes undefined/null values
+    ],
   })
 );
 app.use("/uploads", express.static(__dirname + "/uploads"));
