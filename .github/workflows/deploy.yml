@@ -19,14 +19,14 @@ jobs:
       - name: Build and Push Backend Image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/airbnb-backend:v${{ github.run_number }} \
-                       -t ${{ secrets.DOCKER_USERNAME }}/airbnb-backend:latest ./backend
+                       -t ${{ secrets.DOCKER_USERNAME }}/airbnb-backend:latest ./api
           docker push ${{ secrets.DOCKER_USERNAME }}/airbnb-backend:v${{ github.run_number }}
           docker push ${{ secrets.DOCKER_USERNAME }}/airbnb-backend:latest
 
       - name: Build and Push Frontend Image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/airbnb-client:v${{ github.run_number }} \
-                       -t ${{ secrets.DOCKER_USERNAME }}/airbnb-client:latest ./frontend
+                       -t ${{ secrets.DOCKER_USERNAME }}/airbnb-client:latest ./client
           docker push ${{ secrets.DOCKER_USERNAME }}/airbnb-client:v${{ github.run_number }}
           docker push ${{ secrets.DOCKER_USERNAME }}/airbnb-client:latest
 
