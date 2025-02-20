@@ -37,7 +37,15 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/airbnb-backend:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/airbnb-client:latest
+            cd ~/airbnb-app
+            echo "DB_USER=${{ secrets.DB_USER }}" > .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+            echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+            echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+            echo "CLIENT_URL=${{ secrets.CLIENT_URL }}" >> .env
+            echo "SECRET_ACCESS_TOKEN=${{ secrets.SECRET_ACCESS_TOKEN }}" >> .env
+
             docker-compose down
+            docker-compose pull
             docker-compose up -d --pull always
