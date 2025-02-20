@@ -1,0 +1,43 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and Push Backend Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/airbnb-backend:v${{ github.run_number }} \
+                       -t ${{ secrets.DOCKER_USERNAME }}/airbnb-backend:latest ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/airbnb-backend:v${{ github.run_number }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/airbnb-backend:latest
+
+      - name: Build and Push Frontend Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/airbnb-client:v${{ github.run_number }} \
+                       -t ${{ secrets.DOCKER_USERNAME }}/airbnb-client:latest ./frontend
+          docker push ${{ secrets.DOCKER_USERNAME }}/airbnb-client:v${{ github.run_number }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/airbnb-client:latest
+
+      - name: SSH into EC2 and Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_PUBLIC_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/airbnb-backend:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/airbnb-client:latest
+            docker-compose down
+            docker-compose up -d --pull always
