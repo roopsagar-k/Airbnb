@@ -20,7 +20,7 @@ app.use(
   cors({  
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: "*",
   })
 );
 app.use("/uploads", express.static(__dirname + "/uploads"));

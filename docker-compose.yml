@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   backend:
-    image: roopsagar9854/airbnb-backend:v2
+    image: roopsagar9854/airbnb-backend:latest
     ports:
       - "3000:3000"
     env_file:
