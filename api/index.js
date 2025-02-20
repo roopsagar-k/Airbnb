@@ -17,10 +17,14 @@ const port = process.env.PORT || 3000;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use(
-  cors({  
+  cors({
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
-    origin: "http://localhost:4173" || "http://frontend:4173",
+    origin: [
+      "http://localhost:4173",
+      "http://frontend:4173",
+      process.env.CLIENT_URL,
+    ].filter(Boolean),
   })
 );
 app.use("/uploads", express.static(__dirname + "/uploads"));
@@ -34,7 +38,8 @@ function authenticateToken(req, res, next) {
     return res.status(401).json({ message: "Authentication required" });
   }
   jwt.verify(token, process.env.SECRET_ACCESS_TOKEN, {}, (err, user) => {
-    if (err) return res.status(403).json({ message: "Invalid or expired token" });
+    if (err)
+      return res.status(403).json({ message: "Invalid or expired token" });
     req.user = user;
     next();
   });
@@ -82,12 +87,19 @@ app.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password are required" });
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
     }
 
-    const user = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+    const user = await db.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
     if (user.rows.length > 0) {
-      const passwordMatch = await bcrypt.compare(password, user.rows[0].password);
+      const passwordMatch = await bcrypt.compare(
+        password,
+        user.rows[0].password
+      );
       if (passwordMatch) {
         const token = jwt.sign(
           {
@@ -96,7 +108,7 @@ app.post("/login", async (req, res) => {
             id: user.rows[0].id,
           },
           process.env.SECRET_ACCESS_TOKEN
-        );  
+        );
         res
           .cookie("token", token)
           .json({ message: "Login successful", user: user.rows[0] });
@@ -182,7 +194,15 @@ app.post("/addNewPlace", authenticateToken, async (req, res) => {
       price,
     } = req.body;
 
-    if (!title || !address || !description || !checkIn || !checkOut || !maxGuests || !price) {
+    if (
+      !title ||
+      !address ||
+      !description ||
+      !checkIn ||
+      !checkOut ||
+      !maxGuests ||
+      !price
+    ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -202,7 +222,10 @@ app.post("/addNewPlace", authenticateToken, async (req, res) => {
         req.user.id,
       ]
     );
-    res.status(201).json({ message: "New place created successfully", place: placeInserted.rows[0] });
+    res.status(201).json({
+      message: "New place created successfully",
+      place: placeInserted.rows[0],
+    });
   } catch (error) {
     console.error("Add new place error:", error);
     res.status(500).json({ message: "Failed to create new place" });
@@ -212,7 +235,9 @@ app.post("/addNewPlace", authenticateToken, async (req, res) => {
 app.get("/getUserPlaces", authenticateToken, async (req, res) => {
   try {
     const { id } = req.user;
-    const places = await db.query("SELECT * FROM places WHERE owner = $1;", [id]);
+    const places = await db.query("SELECT * FROM places WHERE owner = $1;", [
+      id,
+    ]);
     res.json(places.rows);
   } catch (error) {
     console.error("Get user places error:", error);
@@ -223,7 +248,9 @@ app.get("/getUserPlaces", authenticateToken, async (req, res) => {
 app.get("/places/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const placeData = await db.query("SELECT * FROM places WHERE id = $1;", [id]);
+    const placeData = await db.query("SELECT * FROM places WHERE id = $1;", [
+      id,
+    ]);
     if (placeData.rows.length === 0) {
       return res.status(404).json({ message: "Place not found" });
     }
@@ -250,7 +277,15 @@ app.put("/updatePlaceData/:id", authenticateToken, async (req, res) => {
       price,
     } = req.body;
 
-    if (!title || !address || !description || !checkIn || !checkOut || !maxGuests || !price) {
+    if (
+      !title ||
+      !address ||
+      !description ||
+      !checkIn ||
+      !checkOut ||
+      !maxGuests ||
+      !price
+    ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -273,10 +308,14 @@ app.put("/updatePlaceData/:id", authenticateToken, async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ message: "Place not found or you don't have permission to update it" });
+      return res.status(404).json({
+        message: "Place not found or you don't have permission to update it",
+      });
     }
 
-    res.status(200).json({ message: "Place updated successfully", place: result.rows[0] });
+    res
+      .status(200)
+      .json({ message: "Place updated successfully", place: result.rows[0] });
   } catch (error) {
     console.error("Update place error:", error);
     res.status(500).json({ message: "Failed to update place" });
@@ -296,7 +335,10 @@ app.get("/places", async (req, res) => {
 app.get("/user/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await db.query("SELECT name, email FROM users WHERE id = $1;", [id]);
+    const user = await db.query(
+      "SELECT name, email FROM users WHERE id = $1;",
+      [id]
+    );
     if (user.rows.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -320,7 +362,15 @@ app.post("/bookings", authenticateToken, async (req, res) => {
       price,
     } = req.body;
 
-    if (!place || !checkIn || !checkOut || !numberOfGuests || !name || !contactNumber || !price) {
+    if (
+      !place ||
+      !checkIn ||
+      !checkOut ||
+      !numberOfGuests ||
+      !name ||
+      !contactNumber ||
+      !price
+    ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -361,7 +411,7 @@ app.post("/filter", async (req, res) => {
       return res.status(400).json({ message: "Search query is required" });
     }
     const response = await db.query(
-      "SELECT * FROM places WHERE LOWER(title) LIKE '%' || $1 || '%' OR LOWER(address) LIKE '%' || $1 || '%';", 
+      "SELECT * FROM places WHERE LOWER(title) LIKE '%' || $1 || '%' OR LOWER(address) LIKE '%' || $1 || '%';",
       [searchQuery.toLowerCase()]
     );
     res.json(response.rows);
@@ -396,8 +446,11 @@ app.post("/addToFavorites", authenticateToken, async (req, res) => {
 app.get("/getFavorites", authenticateToken, async (req, res) => {
   try {
     const { id } = req.user;
-    const response = await db.query("SELECT place_id FROM favorites WHERE user_id = $1;", [id]);
-    const arrayOfIds = response.rows.map(obj => obj.place_id);
+    const response = await db.query(
+      "SELECT place_id FROM favorites WHERE user_id = $1;",
+      [id]
+    );
+    const arrayOfIds = response.rows.map((obj) => obj.place_id);
     res.json(arrayOfIds);
   } catch (error) {
     console.error("Get favorites error:", error);
@@ -412,7 +465,10 @@ app.post("/deleteFromFavorites", authenticateToken, async (req, res) => {
     if (!place_id) {
       return res.status(400).json({ message: "Place ID is required" });
     }
-    const response = await db.query("DELETE FROM favorites WHERE user_id = $1 AND place_id = $2 RETURNING *;", [id, place_id]);
+    const response = await db.query(
+      "DELETE FROM favorites WHERE user_id = $1 AND place_id = $2 RETURNING *;",
+      [id, place_id]
+    );
     if (response.rows.length === 0) {
       return res.status(404).json({ message: "Favorite not found" });
     }
@@ -448,4 +504,3 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(`App is running at the port ${port}`);
 });
-
