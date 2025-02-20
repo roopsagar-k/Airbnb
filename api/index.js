@@ -23,8 +23,9 @@ app.use(
     origin: [
       "http://localhost:4173",
       "http://frontend:4173",
-      process.env.CLIENT_URL,
-    ].filter(Boolean),
+      "http://3.110.56.47:4173",
+      process.env.CLIENT_URL, // No `.toString()` needed
+    ].filter(Boolean), // Removes undefined/null values    
   })
 );
 app.use("/uploads", express.static(__dirname + "/uploads"));
