@@ -111,7 +111,6 @@ app.post("/login", async (req, res) => {
         res
           .cookie("token", token, {
             httpOnly: true,
-            sameSite: "none",
           })
           .json({ message: "Login successful", user: user.rows[0] });
       } else {
@@ -140,9 +139,7 @@ app.get("/profile", authenticateToken, (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res
-    .cookie("token", "", { httpOnly: true, sameSite: "none" })
-    .json(true);
+  res.cookie("token", "", { httpOnly: true }).json(true);
 });
 
 app.post("/uploadFromLink", async (req, res) => {
