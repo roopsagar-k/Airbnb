@@ -39,8 +39,12 @@ function authenticateToken(req, res, next) {
     return res.status(401).json({ message: "Authentication required" });
   }
   jwt.verify(token, process.env.SECRET_ACCESS_TOKEN, {}, (err, user) => {
-    if (err)
-      return res.status(403).json({ message: "Invalid or expired token" });
+    if (err) {
+      return res.status(403).json({
+        message: "Invalid or expired token",
+        error: err.message, // Include error details
+      });
+    }
     req.user = user;
     next();
   });
@@ -113,7 +117,7 @@ app.post("/login", async (req, res) => {
         res
           .cookie("token", token, {
             httpOnly: true,
-            secure: true, 
+            secure: true,
             sameSite: "none",
           })
           .json({ message: "Login successful", user: user.rows[0] });
@@ -506,6 +510,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Something went wrong!" });
 });
 
-app.listen(port,"0.0.0.0", () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`App is running at the port ${port}`);
 });
