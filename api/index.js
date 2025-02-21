@@ -40,9 +40,9 @@ function authenticateToken(req, res, next) {
   }
   jwt.verify(token, process.env.SECRET_ACCESS_TOKEN, {}, (err, user) => {
     if (err) {
-      return res.status(403).json({ 
-        message: "Invalid or expired token", 
-        error: err.message // Include error details
+      return res.status(403).json({
+        message: "Invalid or expired token",
+        error: err.message, // Include error details
       });
     }
     req.user = user;
@@ -117,7 +117,7 @@ app.post("/login", async (req, res) => {
         res
           .cookie("token", token, {
             httpOnly: true,
-            secure: true, 
+            secure: true,
             sameSite: "none",
           })
           .json({ message: "Login successful", user: user.rows[0] });
@@ -147,7 +147,9 @@ app.get("/profile", authenticateToken, (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.cookie("token", "").json(true);
+  res
+    .cookie("token", "", { httpOnly: true, secure: true, sameSite: "none" })
+    .json(true);
 });
 
 app.post("/uploadFromLink", async (req, res) => {
@@ -510,6 +512,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Something went wrong!" });
 });
 
-app.listen(port,"0.0.0.0", () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`App is running at the port ${port}`);
 });
