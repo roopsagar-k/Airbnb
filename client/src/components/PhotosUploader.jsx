@@ -14,7 +14,7 @@ export default function PhotosUploader({
     e.preventDefault();
     const { data: fileName } = await axios.post("/uploadFromLink", {
       link: photoLink,
-    });
+    }, {withCredentials: true});
     setAddedPhotos((prev) => {
       return [...prev, fileName];
     });

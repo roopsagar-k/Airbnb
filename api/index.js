@@ -111,7 +111,11 @@ app.post("/login", async (req, res) => {
           process.env.SECRET_ACCESS_TOKEN
         );
         res
-          .cookie("token", token)
+          .cookie("token", token, {
+            httpOnly: true,
+            secure: true, 
+            sameSite: "none",
+          })
           .json({ message: "Login successful", user: user.rows[0] });
       } else {
         res.status(401).json({ message: "Invalid credentials" });

@@ -36,7 +36,7 @@ export default function BookingWidget({placeData}) {
                     name,
                     contactNumber,
                     price: priceForTheDays,
-                })
+                }, {withCredentials: true});
             if(response.status === 201) {
                 setRedirect(true);
                 alert(`Congratulations ${name}! Your booking has been successfully created. Get ready for an amazing experience!`);

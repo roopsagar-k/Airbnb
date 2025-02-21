@@ -24,7 +24,7 @@ export default function LoginPage() {
       const response = await axios.post("/login", {
         email,
         password,
-      });
+      }, { withCredentials: true });
 
       if (response.data.message === "Login successful") {
         toast.success("Login successful! Redirecting...");

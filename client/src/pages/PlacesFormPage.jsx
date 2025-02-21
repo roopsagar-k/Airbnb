@@ -46,14 +46,14 @@ export default function PlacesFormPage() {
             title, address, addedPhotos, 
             description, perks, extraInfo, 
             checkIn, checkOut, maxGuests, price
-           });
+           }, {withCredentials: true});
            setRedirect("/account/places");
         } else {
           await axios.put(`/updatePlaceData/${id}`, {
             title, address, addedPhotos, 
             description, perks, extraInfo, 
             checkIn, checkOut, maxGuests, price 
-           });
+           }, {withCredentials: true});
           setRedirect("/account/places");
         }
     }
