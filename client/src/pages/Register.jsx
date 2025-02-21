@@ -18,7 +18,7 @@ export default function RegisterPage() {
             name,
             email,
             password,
-        }, { withCredentials: true });
+        });
 
         if (response.status === 201) {
             alert("Registration successful, Now you can login");

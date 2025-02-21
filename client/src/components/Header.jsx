@@ -23,7 +23,7 @@ export default function Header() {
   }, [isPhoneView]);
 
   async function fetchData(params) {
-    const response = await axios.post("/filter", { searchQuery: params }, { withCredentials: true });
+    const response = await axios.post("/filter", { searchQuery: params });
     return response.data;
   }
 

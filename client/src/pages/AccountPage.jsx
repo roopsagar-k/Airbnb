@@ -25,7 +25,7 @@ export default function AccountPage() {
     const Profile = () => {
 
         async function handleLogout() {
-            await axios.post("/logout", {}, { withCredentials: true });
+            await axios.post("/logout");
             setRedirect("/");
             setUser(null);
         }

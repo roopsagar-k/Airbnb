@@ -11,7 +11,7 @@ const Favorite = ({ placeId, isPlacePage }) => {
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const res = await axios.get("/getFavorites", { withCredentials: true });
+        const res = await axios.get("/getFavorites");
         setFavorites(res.data);
       } catch (err) {
         console.error("Failed to fetch favorites:", err);
@@ -22,9 +22,7 @@ const Favorite = ({ placeId, isPlacePage }) => {
 
   const handleFavorites = async (event, placeId, action) => {
     if (!user) {
-      alert(
-        "Please sign in to add this to your favorites and access them anytime!"
-      );
+      alert("Please sign in to add this to your favorites and access them anytime!");
       return;
     }
 
@@ -32,18 +30,10 @@ const Favorite = ({ placeId, isPlacePage }) => {
 
     try {
       if (action === "add") {
-        await axios.post(
-          "/addToFavorites",
-          { place_id: placeId },
-          { withCredentials: true }
-        );
+        await axios.post("/addToFavorites", { place_id: placeId });
         setFavorites((prev) => [...prev, placeId]); // Optimistically update
       } else if (action === "delete") {
-        await axios.post(
-          "/deleteFromFavorites",
-          { place_id: placeId },
-          { withCredentials: true }
-        );
+        await axios.post("/deleteFromFavorites", { place_id: placeId });
         setFavorites((prev) => prev.filter((fav) => fav !== placeId)); // Optimistically update
       }
     } catch (err) {
