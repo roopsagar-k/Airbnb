@@ -105,7 +105,6 @@ app.post("/login", async (req, res) => {
         res
           .cookie("token", token, {
             httpOnly: true,
-            secure: true,
             sameSite: "none",
           })
           .json({ message: "Login successful", user: user.rows[0] });
@@ -136,7 +135,7 @@ app.get("/profile", authenticateToken, (req, res) => {
 
 app.post("/logout", (req, res) => {
   res
-    .cookie("token", "", { httpOnly: true, secure: true, sameSite: "none" })
+    .cookie("token", "", { httpOnly: true, sameSite: "none" })
     .json(true);
 });
 
