@@ -18,6 +18,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(cookieParser());
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://airbnb-clone.roopsagar.tech", // Single origin allowed
+  })
+);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
