@@ -16,7 +16,6 @@ import { SearchProvider } from "./SearchContext.jsx";
 axios.defaults.baseURL =
   import.meta.env.VITE_API_BASE_URL || "http://airbnb-backend.roopsagar.tech";
 axios.defaults.withCredentials = true;
-axios.defaults.headers.common["credentials"] = "include";
 
 function App() {
   return (

@@ -26,7 +26,6 @@ app.use(
       "http://3.110.56.47:4173",
       "http://airbnb-clone.roopsagar.tech",
     ],
-    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 app.use("/uploads", express.static(__dirname + "/uploads"));
