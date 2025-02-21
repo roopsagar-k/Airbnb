@@ -16,26 +16,6 @@ const app = express();
 const port = process.env.PORT || 3000;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const allowedOrigins = [
-  "http://localhost:4173",
-  "http://frontend:4173",
-  "http://3.110.56.47:4173",
-  "http://airbnb-clone.roopsagar.tech",
-];
-
-app.use(
-  cors({
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, origin); // Allow the requested origin
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-  })
-);
 app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
