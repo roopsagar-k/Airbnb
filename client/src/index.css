@@ -2,17 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
-input[type="text"], input[type="tel"], input[type="email"], input[type="password"], input[type="number"] {
-    @apply w-full p-2 mb-4 rounded-full border-2 border-gray-300;
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+@layer base {
+  body {
+    @apply bg-gray-50;
+  }
+}
+
+@layer components {
+  .input-base {
+    @apply w-full px-4 py-3 border border-gray-200 rounded-full transition-all;
+    @apply focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent;
+  }
+
+  .btn-base {
+    @apply px-4 py-2 rounded-full font-medium transition-colors;
+  }
+
+  .btn-primary {
+    @apply btn-base bg-indigo-600 text-white hover:bg-indigo-700;
+  }
+
+  .btn-secondary {
+    @apply btn-base bg-gray-100 text-gray-700 hover:bg-gray-200;
+  }
+
+  .auth-card {
+    @apply max-w-md w-full mx-auto bg-white rounded-2xl shadow-lg p-8;
+  }
+}
+
+/* Form Elements */
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="password"],
+input[type="number"] {
+  @apply input-base;
+}
+
 input[type="checkbox"] {
-    @apply w-4 h-4 text-primary accent-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600;
+  @apply w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded;
+  @apply focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2;
 }
 
+/* Buttons */
 button {
-    @apply bg-gray-300;
+  @apply btn-base bg-gray-100 text-gray-700 hover:bg-gray-200;
 }
 
-button.primary, .btn{
-    @apply w-full p-2 mb-4 rounded-full bg-primary text-white; 
-}   
+button.primary {
+  @apply btn-primary w-full;
+}
+
+.btn {
+  @apply btn-primary w-full;
+}

@@ -29,7 +29,7 @@ export default function PlacePage() {
 
         
     return (
-    <div className="px-12 py-4">
+    <div className="px-12 py-4 mt-20">
             <div className="text-2xl font-semibold flex gap-4 items-center">
                 {placeData.title}
                 <Favorite placeId={placeData.id} isPlacePage={true} />

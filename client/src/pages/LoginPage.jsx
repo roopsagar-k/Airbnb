@@ -41,11 +41,6 @@ export default function LoginPage() {
       }
       console.error("Login error:", error);
     }
-
-    emailInput.current.value = "";
-    passwordInput.current.value = "";
-    setEmail("");
-    setPassword("");
   }
 
   if (redirect) {
@@ -53,34 +48,55 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center grow h-screen">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <ToastContainer />
-      <div className="-mt-32 p-4 sm:p-6 md:p-8">
-        <h1 className="text-4xl text-center mb-4 sm:mb-6 md:mb-8">Login</h1>
-        <form className="max-w-md mx-auto" onSubmit={loginUser}>
-          <input
-            type="email"
-            placeholder="your@email.com"
-            value={email}
-            ref={emailInput}
-            onChange={(e) => setEmail(e.target.value)}
-            className="input-field"
-          />
-          <input
-            type="password"
-            placeholder="password"
-            value={password}
-            ref={passwordInput}
-            onChange={(e) => setPassword(e.target.value)}
-            className="input-field"
-          />
-          <button type="submit" className="primary">Login</button>
-          <div className="p-2 text-center">
-            Don&apos;t have an account yet?{' '}
-            <Link to="/register">
-              <span className="text-primary underline font-medium">Register now</span>
-            </Link>
+      <div className="auth-card">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center">
+            <span className="text-white font-bold text-xl">D</span>
           </div>
+          <h2 className="mt-6 text-3xl font-bold text-gray-900">Welcome back</h2>
+          <p className="mt-2 text-sm text-gray-600">Sign in to your account</p>
+        </div>
+
+        <form className="mt-8 space-y-4" onSubmit={loginUser}>
+          <div>
+            <label htmlFor="email" className="sr-only">Email address</label>
+            <input
+              id="email"
+              type="email"
+              required
+              placeholder="Email address"
+              value={email}
+              ref={emailInput}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mb-0"
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="sr-only">Password</label>
+            <input
+              id="password"
+              type="password"
+              required
+              placeholder="Password"
+              value={password}
+              ref={passwordInput}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mb-0"
+            />
+          </div>
+
+          <button type="submit" className="primary mt-6">
+            Sign in
+          </button>
+
+          <p className="text-center text-sm text-gray-600">
+            Don't have an account?{' '}
+            <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+              Register now
+            </Link>
+          </p>
         </form>
       </div>
     </div>

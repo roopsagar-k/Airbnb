@@ -1,126 +1,114 @@
-import axios from "axios";
-import { FiUpload } from "react-icons/fi";
-import { MdDeleteSweep } from "react-icons/md";
-import { FaStar } from "react-icons/fa";
-import { FaRegStar } from "react-icons/fa";
+"use client"
 
-export default function PhotosUploader({
-  photoLink,
-  setPhotoLink,
-  addedPhotos,
-  setAddedPhotos,
-}) {
+import { useState } from "react"
+import axios from "axios"
+import { FiUpload } from "react-icons/fi"
+import { MdDeleteSweep } from "react-icons/md"
+import { FaStar } from "react-icons/fa"
+import { FaRegStar } from "react-icons/fa"
+
+export default function PhotosUploader({ photoLink, setPhotoLink, addedPhotos, setAddedPhotos }) {
+  const [isUploading, setIsUploading] = useState(false)
+
   async function addPhotoByLink(e) {
-    e.preventDefault();
-    const { data: fileName } = await axios.post("/uploadFromLink", {
-      link: photoLink,
-    });
-    setAddedPhotos((prev) => {
-      return [...prev, fileName];
-    });
-    setPhotoLink("");
+    e.preventDefault()
+    setIsUploading(true)
+    try {
+      const { data: fileName } = await axios.post("/uploadFromLink", {
+        link: photoLink,
+      })
+      setAddedPhotos((prev) => [...prev, fileName])
+      setPhotoLink("")
+    } catch (error) {
+      console.error("Error uploading photo by link:", error)
+      // You might want to show an error message to the user here
+    } finally {
+      setIsUploading(false)
+    }
   }
 
-  function uploadPhoto(e) {
-    const files = e.target.files;
-    const data = new FormData();
+  async function uploadPhoto(e) {
+    const files = e.target.files
+    const data = new FormData()
     for (let i = 0; i < files.length; i++) {
-      data.append("photos", files[i]);
+      data.append("photos", files[i])
     }
 
-    axios
-      .post("/upload", data, {
+    setIsUploading(true)
+    try {
+      const { data: fileNames } = await axios.post("/upload", data, {
         headers: { "Content-type": "multipart/form-data" },
       })
-      .then((res) => {
-        const { data: fileName } = res;
-        setAddedPhotos((prev) => {
-          return [...prev, ...fileName];
-        });
-      });
+      setAddedPhotos((prev) => [...prev, ...fileNames])
+    } catch (error) {
+      console.error("Error uploading photos:", error)
+      // You might want to show an error message to the user here
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   function removePhoto(e, link) {
-    e.preventDefault();
-    setAddedPhotos((prev) => {
-      return [...prev.filter((photoLink) => photoLink !== link)];
-    });
+    e.preventDefault()
+    setAddedPhotos((prev) => prev.filter((photoLink) => photoLink !== link))
   }
 
   function selectAsMainPhoto(e, link) {
-    e.preventDefault();
-    setAddedPhotos((prev) => {
-      return [link, ...prev.filter((photoLink) => photoLink !== link)];
-    });
+    e.preventDefault()
+    setAddedPhotos((prev) => [link, ...prev.filter((photoLink) => photoLink !== link)])
   }
+
   return (
-    <div>
-      <div className="flex items-center gap-2 mt-2 p-1">
+    <div className="space-y-4">
+      <div className="flex items-center gap-2">
         <input
           value={photoLink}
           onChange={(e) => setPhotoLink(e.target.value)}
           type="text"
-          className="placeholder:px-3"
-          placeholder={"Add using a link....jpg"}
+          className="flex-grow px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          placeholder="Add photo using a link (http://...)"
         />
         <button
-          onClick={(e) => addPhotoByLink(e)}
-          className="bg-primary rounded-3xl text-white font-semibold px-4 py-2 mb-4"
+          onClick={addPhotoByLink}
+          className="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-300 disabled:opacity-50"
+          disabled={isUploading}
         >
-          Add&nbsp;Photo
+          {isUploading ? "Adding..." : "Add Photo"}
         </button>
       </div>
-      <div className="grid gap-2 grid-cols-3 md:grid-cols-4 lg:grid-cols-6 mb-4">
-        {addedPhotos.length > 0 &&
-          addedPhotos.map((link, index) => (
-            <div key={index} className="h-32 flex cursor-pointer relative">
-              <img
-                className="rounded-2xl object-cover h-full w-full"
-                src={
-                  `${
-                    import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"
-                  }` +
-                  "/uploads/" +
-                  link
-                }
-                alt={link}
-              />
-             
-              <div className="absolute bottom-0 right-0 max-w-max p-1">
-                {addedPhotos[0] === link && (
-                  <button className="bg-transparent m-1 w-max p-1 backdrop-blur-lg rounded-md transition-all ease-in-out duration-150 hover:scale-90">
-                    <FaStar size={"25px"} color="#f1f1f1" />
-                  </button>
-                )}
-                {addedPhotos[0] !== link && (
-                  <button
-                    onClick={(e) => selectAsMainPhoto(e, link)}
-                    className="bg-transparent m-1 w-max p-1 backdrop-blur-lg rounded-md transition-all ease-in-out duration-150 hover:scale-90"
-                  >
-                    <FaRegStar size={"25px"} color="f1f1f1" />
-                  </button>
-                )}
-                <button
-                  onClick={(e) => removePhoto(e, link)}
-                  className="bg-transparent w-max p-1 backdrop-blur-lg rounded-md transition-all ease-in-out duration-150 hover:scale-90"
-                >
-                  <MdDeleteSweep size={"25px"} color="#f1f1f1" />
-                </button>
-              </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {addedPhotos.map((link, index) => (
+          <div key={index} className="relative group">
+            <img
+              className="w-full h-48 object-cover rounded-lg shadow-md"
+              src={`${import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"}/uploads/${link}`}
+              alt={`Uploaded photo ${index + 1}`}
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center">
+              <button
+                onClick={(e) => selectAsMainPhoto(e, link)}
+                className="text-white p-1 rounded-full hover:bg-indigo-600 transition duration-300"
+                title={index === 0 ? "Main photo" : "Set as main photo"}
+              >
+                {index === 0 ? <FaStar size={24} /> : <FaRegStar size={24} />}
+              </button>
+              <button
+                onClick={(e) => removePhoto(e, link)}
+                className="text-white p-1 rounded-full hover:bg-indigo-600 transition duration-300 ml-2"
+                title="Remove photo"
+              >
+                <MdDeleteSweep size={24} />
+              </button>
             </div>
-          ))}
-        <label className="flex items-center cursor-pointer gap-2 justify-center border-2 bg-transparent p-8 rounded-2xl h-32">
-          <input
-            multiple
-            type="file"
-            className={"hidden"}
-            accept="image/*"
-            onChange={uploadPhoto}
-          />
-          <FiUpload size={"26px"} />
-          <p>Upload</p>
+          </div>
+        ))}
+        <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg h-48 cursor-pointer hover:border-indigo-500 transition duration-300">
+          <input multiple type="file" className="hidden" accept="image/*" onChange={uploadPhoto} />
+          <FiUpload size={32} className="text-gray-400" />
+          <p className="mt-2 text-sm text-gray-500">Upload photos</p>
         </label>
       </div>
     </div>
-  );
+  )
 }
+

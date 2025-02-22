@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { UserContext } from "../UserContext";
 
@@ -7,7 +6,6 @@ const Favorite = ({ placeId, isPlacePage }) => {
   const [favorites, setFavorites] = useState([]);
   const { user } = useContext(UserContext);
 
-  // Fetch favorites on component mount
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
@@ -31,10 +29,10 @@ const Favorite = ({ placeId, isPlacePage }) => {
     try {
       if (action === "add") {
         await axios.post("/addToFavorites", { place_id: placeId });
-        setFavorites((prev) => [...prev, placeId]); // Optimistically update
+        setFavorites((prev) => [...prev, placeId]);
       } else if (action === "delete") {
         await axios.post("/deleteFromFavorites", { place_id: placeId });
-        setFavorites((prev) => prev.filter((fav) => fav !== placeId)); // Optimistically update
+        setFavorites((prev) => prev.filter((fav) => fav !== placeId));
       }
     } catch (err) {
       console.error(`Failed to ${action} favorite:`, err);
@@ -50,8 +48,8 @@ const Favorite = ({ placeId, isPlacePage }) => {
           onClick={(e) => handleFavorites(e, placeId, "delete")}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          fill="#ff385c"
-          className="w-6 h-6"
+          fill="#4f46e5"
+          className="w-6 h-6 cursor-pointer transition-transform hover:scale-110"
         >
           <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
         </svg>
@@ -61,9 +59,9 @@ const Favorite = ({ placeId, isPlacePage }) => {
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          strokeWidth={2.5}
-          stroke={isPlacePage ? "black" : "white"}
-          className="w-6 h-6"
+          strokeWidth={2}
+          stroke={isPlacePage ? "#4f46e5" : "white"}
+          className="w-6 h-6 cursor-pointer transition-transform hover:scale-110"
         >
           <path
             strokeLinecap="round"
